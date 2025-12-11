@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'api_service.dart';
+import 'screens/login_screen.dart';
+import 'screens/add_report_screen.dart';
 
 void main() {
   runApp(const PawAlertApp());
@@ -74,11 +76,39 @@ class _HomePageState extends State<HomePage> {
       ),
       body: _buildBody(),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // TODO: Navigate to login/register
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Login ekranı eklenecek')),
-          );
+        onPressed: () async {
+          // Check if user is logged in
+          if (!_apiService.isLoggedIn) {
+            // Navigate to login screen
+            final result = await Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const LoginScreen()),
+            );
+
+            if (result == true) {
+              // User logged in, now navigate to add report
+              final reportResult = await Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const AddReportScreen()),
+              );
+
+              if (reportResult == true) {
+                // Refresh reports list
+                _loadReports();
+              }
+            }
+          } else {
+            // User already logged in, go directly to add report
+            final result = await Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const AddReportScreen()),
+            );
+
+            if (result == true) {
+              // Refresh reports list
+              _loadReports();
+            }
+          }
         },
         child: const Icon(Icons.add),
       ),

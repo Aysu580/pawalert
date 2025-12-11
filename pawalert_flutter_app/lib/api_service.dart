@@ -4,6 +4,11 @@ import 'config.dart';
 
 /// API Service for PawAlert Backend
 class ApiService {
+  // Singleton pattern
+  static final ApiService _instance = ApiService._internal();
+  factory ApiService() => _instance;
+  ApiService._internal();
+
   // Store token after login
   String? _authToken;
 
